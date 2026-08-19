@@ -1,81 +1,176 @@
 import { useForm } from "react-hook-form";
-import { loginTeacher } from "../../services/auth.service";
+import { useNavigate } from "react-router-dom";
+import { teacherLogin } from "../../services/auth.service";
 import { useAuth } from "../../context/AuthContext";
+import { useState } from "react";
 
 function TeacherLogin() {
 
     const {
         register,
         handleSubmit,
-        formState: { errors, isSubmitting },
+        formState: { errors },
     } = useForm();
 
+    const navigate = useNavigate();
     const { login } = useAuth();
+
+    const [serverError, setServerError] = useState("");
 
     const onSubmit = async (data) => {
 
         try {
 
-            const response = await loginTeacher(data);
+            setServerError("");
 
-            login(response.data);
+            const response = await teacherLogin(data);
 
-            console.log("Teacher login successful");
+            login(response);
+
+            navigate("/teacher/dashboard");
 
         } catch (error) {
 
-            console.error(
+            setServerError(
                 error.response?.data?.message ||
                 "Login failed"
             );
+
         }
     };
 
     return (
-        <div>
+        <div className="flex min-h-screen items-center justify-center bg-slate-950 px-6 text-white">
 
-            <h1>Teacher Login</h1>
+            <div className="w-full max-w-md rounded-2xl border border-slate-800 bg-slate-900 p-8">
 
-            <form onSubmit={handleSubmit(onSubmit)}>
+                <h1 className="text-3xl font-bold">
+                    Teacher Login
+                </h1>
 
-                <input
-                    type="email"
-                    placeholder="Email"
-                    {...register("email", {
-                        required: "Email is required",
-                    })}
-                />
+                <p className="mt-2 text-slate-400">
+                    Login to your teacher account
+                </p>
 
-                {errors.email && (
-                    <p>{errors.email.message}</p>
+
+                {serverError && (
+                    <div className="mt-5 rounded-lg bg-red-500/10 p-3 text-sm text-red-400">
+                        {serverError}
+                    </div>
                 )}
 
-                <input
-                    type="password"
-                    placeholder="Password"
-                    {...register("password", {
-                        required: "Password is required",
-                        minLength: {
-                            value: 6,
-                            message: "Password must be at least 6 characters",
-                        },
-                    })}
-                />
 
-                {errors.password && (
-                    <p>{errors.password.message}</p>
-                )}
+                <form
+                    onSubmit={handleSubmit(onSubmit)}
+                    className="mt-8 space-y-5"
+                >
+
+                    <div>
+
+                        <label className="mb-2 block text-sm font-medium">
+                            Email
+                        </label>
+
+                        <input
+                            type="email"
+                            placeholder="teacher@example.com"
+                            {...register("email", {
+                                required: "Email is required",
+                            })}
+                            className="w-full rounded-lg border border-slate-700 bg-slate-800 px-4 py-3 outline-none focus:border-purple-500"
+                        />
+
+                        {errors.email && (
+                            <p className="mt-1 text-sm text-red-400">
+                                {errors.email.message}
+                            </p>
+                        )}
+
+                    </div>
+
+
+                    {/* Registration Number */}
+
+                    <div>
+
+                        <label className="mb-2 block text-sm font-medium">
+                            Employee ID / Registration Number
+                        </label>
+
+                        <input
+                            type="text"
+                            placeholder="EMP-001"
+                            {...register("employeeId", {
+                                required: "Employee ID is required",
+                            })}
+                            className="w-full rounded-lg border border-slate-700 bg-slate-800 px-4 py-3 outline-none focus:border-purple-500"
+                        />
+
+                        {errors.employeeId && (
+                            <p className="mt-1 text-sm text-red-400">
+                                {errors.employeeId.message}
+                            </p>
+                        )}
+
+                    </div>
+
+
+                    <div>
+
+                        <label className="mb-2 block text-sm font-medium">
+                            Password
+                        </label>
+
+                        <input
+                            type="password"
+                            placeholder="••••••••"
+                            {...register("password", {
+                                required: "Password is required",
+                            })}
+                            className="w-full rounded-lg border border-slate-700 bg-slate-800 px-4 py-3 outline-none focus:border-purple-500"
+                        />
+
+                        {errors.password && (
+                            <p className="mt-1 text-sm text-red-400">
+                                {errors.password.message}
+                            </p>
+                        )}
+
+                    </div>
+
+
+                    <button
+                        type="submit"
+                        className="w-full rounded-lg bg-purple-600 py-3 font-semibold hover:bg-purple-700"
+                    >
+                        Login
+                    </button>
+
+                </form>
+
+
+                <p className="mt-6 text-center text-sm text-slate-400">
+
+                    Don't have an account?
+
+                    <button
+                        onClick={() => navigate("/teacher/register")}
+                        className="ml-1 text-purple-400 hover:text-purple-300"
+                    >
+                        Register
+                    </button>
+
+                </p>
+
 
                 <button
-                    type="submit"
-                    disabled={isSubmitting}
+                    onClick={() => navigate("/")}
+                    className="mt-5 w-full text-sm text-slate-500 hover:text-slate-300"
                 >
-                    {isSubmitting
-                        ? "Logging in..."
-                        : "Login"}
+                    ← Back to Home
                 </button>
 
-            </form>
+            </div>
 
         </div>
     );

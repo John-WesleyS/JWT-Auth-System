@@ -32,6 +32,36 @@ const register = (role) => {
 
       const normalizedEmail = email.toLowerCase().trim();
 
+      const roleFields = role === "student"
+        ? {
+            rollNumber: req.body.rollNumber?.trim(),
+            department: req.body.department?.trim(),
+            year: Number(req.body.year),
+          }
+        : {
+            employeeId: req.body.employeeId?.trim(),
+            department: req.body.department?.trim(),
+            subjects: req.body.subjects,
+          };
+
+      if (
+        role === "student" &&
+        (!roleFields.rollNumber || !roleFields.department || !Number.isFinite(roleFields.year))
+      ) {
+        return res.status(400).json({
+          message: "Roll number, department and year are required",
+        });
+      }
+
+      if (
+        role === "teacher" &&
+        (!roleFields.employeeId || !roleFields.department)
+      ) {
+        return res.status(400).json({
+          message: "Employee ID and department are required",
+        });
+      }
+
       // ---------------------------------------------
       // Check existing user
       // ---------------------------------------------
@@ -42,7 +72,19 @@ const register = (role) => {
 
       if (existingUser) {
         return res.status(409).json({
-          message: "Email already registered",
+          message: `${role === "student" ? "Student" : "Teacher"} email already registered. Please use another email or log in.`,
+        });
+      }
+
+      const duplicateField = role === "student"
+        ? await Model.findOne({ rollNumber: roleFields.rollNumber })
+        : await Model.findOne({ employeeId: roleFields.employeeId });
+
+      if (duplicateField) {
+        return res.status(409).json({
+          message: role === "student"
+            ? "Roll number already registered"
+            : "Employee ID already registered",
         });
       }
 
@@ -69,19 +111,9 @@ const register = (role) => {
       // ---------------------------------------------
 
       if (role === "student") {
-        const { rollNumber, department, year } = req.body;
-
-        if (!rollNumber || !department || !year) {
-          return res.status(400).json({
-            message: "Roll number, department and year are required",
-          });
-        }
-
-        userData.rollNumber = rollNumber.trim();
-
-        userData.department = department.trim();
-
-        userData.year = year;
+        userData.rollNumber = roleFields.rollNumber;
+        userData.department = roleFields.department;
+        userData.year = roleFields.year;
       }
 
       // ---------------------------------------------
@@ -89,20 +121,11 @@ const register = (role) => {
       // ---------------------------------------------
 
       if (role === "teacher") {
-        const { employeeId, department, subjects } = req.body;
+        userData.employeeId = roleFields.employeeId;
+        userData.department = roleFields.department;
 
-        if (!employeeId || !department) {
-          return res.status(400).json({
-            message: "Employee ID and department are required",
-          });
-        }
-
-        userData.employeeId = employeeId.trim();
-
-        userData.department = department.trim();
-
-        if (subjects) {
-          userData.subjects = subjects;
+        if (roleFields.subjects) {
+          userData.subjects = roleFields.subjects;
         }
       }
 
@@ -151,6 +174,14 @@ const login = (role) => {
 
       const { email, password } = req.body;
 
+      const roleFields = role === "student"
+        ? {
+            rollNumber: req.body.rollNumber?.trim(),
+          }
+        : {
+            employeeId: req.body.employeeId?.trim(),
+          };
+
       // ---------------------------------------------
       // Validate input
       // ---------------------------------------------
@@ -158,6 +189,18 @@ const login = (role) => {
       if (!email || !password) {
         return res.status(400).json({
           message: "Email and password are required",
+        });
+      }
+
+      if (role === "student" && !roleFields.rollNumber) {
+        return res.status(400).json({
+          message: "Email, registration number and password are required",
+        });
+      }
+
+      if (role === "teacher" && !roleFields.employeeId) {
+        return res.status(400).json({
+          message: "Email, employee ID and password are required",
         });
       }
 
@@ -169,6 +212,7 @@ const login = (role) => {
 
       const user = await Model.findOne({
         email: normalizedEmail,
+        ...roleFields,
       });
 
       if (!user) {
@@ -234,7 +278,22 @@ const login = (role) => {
   };
 };
 
+const logout = async (req, res) => {
+  try {
+    res.status(200).json({
+      message: "Logout successful",
+    });
+  } catch (error) {
+    console.error("Logout Error:", error);
+
+    res.status(500).json({
+      message: "Server error",
+    });
+  }
+};
+
 module.exports = {
   register,
   login,
+  logout
 };

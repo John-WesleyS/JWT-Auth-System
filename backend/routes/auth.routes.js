@@ -2,7 +2,7 @@ const express = require("express");
 
 const router = express.Router();
 
-const { register, login } = require("../controllers/auth.controller");
+const { register, login,logout } = require("../controllers/auth.controller");
 
 // =====================================================
 // STUDENT
@@ -19,5 +19,7 @@ router.post("/student/login", login("student"));
 router.post("/teacher/register", register("teacher"));
 
 router.post("/teacher/login", login("teacher"));
+
+router.post("/logout", logout);
 
 module.exports = router;

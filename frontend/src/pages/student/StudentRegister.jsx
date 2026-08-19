@@ -1,156 +1,288 @@
 import { useForm } from "react-hook-form";
-import { registerStudent } from "../../services/auth.service";
+import { useNavigate } from "react-router-dom";
+import { studentRegister } from "../../services/auth.service";
+import { useState } from "react";
 
 function StudentRegister() {
 
     const {
         register,
         handleSubmit,
-        formState: { errors, isSubmitting },
+        watch,
+        formState: { errors },
     } = useForm();
 
+    const navigate = useNavigate();
+
+    const [serverError, setServerError] = useState("");
+
+    const password = watch("password");
+
     const onSubmit = async (data) => {
+
         try {
 
-            const response = await registerStudent(data);
+            setServerError("");
 
-            console.log(
-                "Student registration successful:",
-                response.data
-            );
+            await studentRegister({
+                name: data.name,
+                email: data.email,
+                password: data.password,
+                rollNumber: data.rollNumber,
+                department: data.department,
+                year: data.year,
+            });
+
+            navigate("/");
 
         } catch (error) {
 
-            console.error(
+            setServerError(
                 error.response?.data?.message ||
                 "Registration failed"
             );
+
         }
     };
 
     return (
-        <div>
+        <div className="flex min-h-screen items-center justify-center bg-slate-950 px-6 text-white">
 
-            <h1>Student Registration</h1>
+            <div className="w-full max-w-md rounded-2xl border border-slate-800 bg-slate-900 p-8">
 
-            <form onSubmit={handleSubmit(onSubmit)}>
+                <h1 className="text-3xl font-bold">
+                    Student Registration
+                </h1>
 
-                {/* Name */}
+                <p className="mt-2 text-slate-400">
+                    Create your student account
+                </p>
 
-                <input
-                    type="text"
-                    placeholder="Name"
-                    {...register("name", {
-                        required: "Name is required",
-                        minLength: {
-                            value: 3,
-                            message: "Name must be at least 3 characters",
-                        },
-                    })}
-                />
 
-                {errors.name && (
-                    <p>{errors.name.message}</p>
+                {serverError && (
+                    <div className="mt-5 rounded-lg bg-red-500/10 p-3 text-sm text-red-400">
+                        {serverError}
+                    </div>
                 )}
 
 
-                {/* Email */}
-
-                <input
-                    type="email"
-                    placeholder="Email"
-                    {...register("email", {
-                        required: "Email is required",
-                    })}
-                />
-
-                {errors.email && (
-                    <p>{errors.email.message}</p>
-                )}
-
-
-                {/* Password */}
-
-                <input
-                    type="password"
-                    placeholder="Password"
-                    {...register("password", {
-                        required: "Password is required",
-                        minLength: {
-                            value: 6,
-                            message: "Password must be at least 6 characters",
-                        },
-                    })}
-                />
-
-                {errors.password && (
-                    <p>{errors.password.message}</p>
-                )}
-
-
-                {/* Roll Number */}
-
-                <input
-                    type="text"
-                    placeholder="Roll Number"
-                    {...register("rollNumber", {
-                        required: "Roll number is required",
-                    })}
-                />
-
-                {errors.rollNumber && (
-                    <p>{errors.rollNumber.message}</p>
-                )}
-
-
-                {/* Department */}
-
-                <input
-                    type="text"
-                    placeholder="Department"
-                    {...register("department", {
-                        required: "Department is required",
-                    })}
-                />
-
-                {errors.department && (
-                    <p>{errors.department.message}</p>
-                )}
-
-
-                {/* Year */}
-
-                <input
-                    type="number"
-                    placeholder="Year"
-                    {...register("year", {
-                        required: "Year is required",
-                        min: {
-                            value: 1,
-                            message: "Year must be between 1 and 4",
-                        },
-                        max: {
-                            value: 4,
-                            message: "Year must be between 1 and 4",
-                        },
-                    })}
-                />
-
-                {errors.year && (
-                    <p>{errors.year.message}</p>
-                )}
-
-
-                <button
-                    type="submit"
-                    disabled={isSubmitting}
+                <form
+                    onSubmit={handleSubmit(onSubmit)}
+                    className="mt-8 space-y-5"
                 >
-                    {isSubmitting
-                        ? "Creating Account..."
-                        : "Create Student Account"}
-                </button>
 
-            </form>
+                    {/* Name */}
+
+                    <div>
+
+                        <label className="mb-2 block text-sm">
+                            Full Name
+                        </label>
+
+                        <input
+                            type="text"
+                            placeholder="John Wesley"
+                            {...register("name", {
+                                required: "Name is required",
+                            })}
+                            className="w-full rounded-lg border border-slate-700 bg-slate-800 px-4 py-3 outline-none focus:border-blue-500"
+                        />
+
+                        {errors.name && (
+                            <p className="mt-1 text-sm text-red-400">
+                                {errors.name.message}
+                            </p>
+                        )}
+
+                    </div>
+
+
+                    {/* Email */}
+
+                    <div>
+
+                        <label className="mb-2 block text-sm">
+                            Email
+                        </label>
+
+                        <input
+                            type="email"
+                            placeholder="student@example.com"
+                            {...register("email", {
+                                required: "Email is required",
+                            })}
+                            className="w-full rounded-lg border border-slate-700 bg-slate-800 px-4 py-3 outline-none focus:border-blue-500"
+                        />
+
+                        {errors.email && (
+                            <p className="mt-1 text-sm text-red-400">
+                                {errors.email.message}
+                            </p>
+                        )}
+
+                    </div>
+
+
+                    {/* Roll Number */}
+
+                    <div>
+
+                        <label className="mb-2 block text-sm">
+                            Roll Number
+                        </label>
+
+                        <input
+                            type="text"
+                            placeholder="STU-001"
+                            {...register("rollNumber", {
+                                required: "Roll number is required",
+                            })}
+                            className="w-full rounded-lg border border-slate-700 bg-slate-800 px-4 py-3 outline-none focus:border-blue-500"
+                        />
+
+                        {errors.rollNumber && (
+                            <p className="mt-1 text-sm text-red-400">
+                                {errors.rollNumber.message}
+                            </p>
+                        )}
+
+                    </div>
+
+
+                    {/* Department */}
+
+                    <div>
+
+                        <label className="mb-2 block text-sm">
+                            Department
+                        </label>
+
+                        <input
+                            type="text"
+                            placeholder="Computer Science"
+                            {...register("department", {
+                                required: "Department is required",
+                            })}
+                            className="w-full rounded-lg border border-slate-700 bg-slate-800 px-4 py-3 outline-none focus:border-blue-500"
+                        />
+
+                        {errors.department && (
+                            <p className="mt-1 text-sm text-red-400">
+                                {errors.department.message}
+                            </p>
+                        )}
+
+                    </div>
+
+
+                    {/* Year */}
+
+                    <div>
+
+                        <label className="mb-2 block text-sm">
+                            Year
+                        </label>
+
+                        <input
+                            type="number"
+                            placeholder="2026"
+                            {...register("year", {
+                                required: "Year is required",
+                                valueAsNumber: true,
+                            })}
+                            className="w-full rounded-lg border border-slate-700 bg-slate-800 px-4 py-3 outline-none focus:border-blue-500"
+                        />
+
+                        {errors.year && (
+                            <p className="mt-1 text-sm text-red-400">
+                                {errors.year.message}
+                            </p>
+                        )}
+
+                    </div>
+
+
+                    {/* Password */}
+
+                    <div>
+
+                        <label className="mb-2 block text-sm">
+                            Password
+                        </label>
+
+                        <input
+                            type="password"
+                            {...register("password", {
+                                required: "Password is required",
+                                minLength: {
+                                    value: 6,
+                                    message: "Minimum 6 characters",
+                                },
+                            })}
+                            className="w-full rounded-lg border border-slate-700 bg-slate-800 px-4 py-3 outline-none focus:border-blue-500"
+                        />
+
+                        {errors.password && (
+                            <p className="mt-1 text-sm text-red-400">
+                                {errors.password.message}
+                            </p>
+                        )}
+
+                    </div>
+
+
+                    {/* Confirm Password */}
+
+                    <div>
+
+                        <label className="mb-2 block text-sm">
+                            Confirm Password
+                        </label>
+
+                        <input
+                            type="password"
+                            {...register("confirmPassword", {
+                                required: "Confirm your password",
+                                validate: value =>
+                                    value === password ||
+                                    "Passwords do not match",
+                            })}
+                            className="w-full rounded-lg border border-slate-700 bg-slate-800 px-4 py-3 outline-none focus:border-blue-500"
+                        />
+
+                        {errors.confirmPassword && (
+                            <p className="mt-1 text-sm text-red-400">
+                                {errors.confirmPassword.message}
+                            </p>
+                        )}
+
+                    </div>
+
+
+                    <button
+                        type="submit"
+                        className="w-full rounded-lg bg-blue-600 py-3 font-semibold hover:bg-blue-700"
+                    >
+                        Create Account
+                    </button>
+
+                </form>
+
+
+                <p className="mt-6 text-center text-sm text-slate-400">
+
+                    Already have an account?
+
+                    <button
+                        onClick={() => navigate("/student/login")}
+                        className="ml-1 text-blue-400"
+                    >
+                        Login
+                    </button>
+
+                </p>
+
+            </div>
 
         </div>
     );

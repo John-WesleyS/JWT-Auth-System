@@ -11,7 +11,9 @@ import TeacherLogin from "./pages/teacher/TeacherLogin";
 import TeacherRegister from "./pages/teacher/TeacherRegister";
 
 import StudentDashboard from "./pages/student/StudentDashboard";
-import TeacherDashboard from "./pages/teacher/TeacherDashboard";
+import TeacherDashboard from "./pages/teacher/TeacherDashbord";
+
+import Landing from "./pages/Landing";
 
 import ProtectedRoute from "./routes/ProtectedRoute";
 
@@ -23,7 +25,10 @@ function App() {
       <Routes>
 
         {/* Student Authentication */}
-
+        <Route
+          path="/"
+          element={<Landing />}
+        />
         <Route
           path="/student/login"
           element={<StudentLogin />}

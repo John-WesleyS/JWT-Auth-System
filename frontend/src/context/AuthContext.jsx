@@ -1,4 +1,5 @@
 import { createContext, useContext, useState } from "react";
+import { logoutUser } from "../services/auth.service";
 
 const AuthContext = createContext();
 
@@ -14,11 +15,25 @@ export const AuthProvider = ({ children }) => {
 
     };
 
-    const logout = () => {
+    const logout = async () => {
 
-        setAccessToken(null);
-        setUser(null);
+        try {
 
+            await logoutUser();
+
+        } catch (error) {
+
+            console.error("Logout error:", error);
+
+        } finally {
+
+            // Remove access token from React memory
+            setAccessToken(null);
+
+            // Remove logged-in user
+            setUser(null);
+
+        }
     };
 
     const isAuthenticated = !!accessToken;
