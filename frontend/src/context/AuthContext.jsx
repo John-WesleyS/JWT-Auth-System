@@ -1,5 +1,6 @@
 import { createContext, useContext, useState } from "react";
 import { logoutUser } from "../services/auth.service";
+import { setAccessToken as setApiAccessToken } from "../services/api";
 
 const AuthContext = createContext();
 
@@ -12,6 +13,10 @@ export const AuthProvider = ({ children }) => {
 
         setAccessToken(data.accessToken);
         setUser(data.user);
+
+        // Also give the api instance the token, so it can
+        // attach it to every request automatically.
+        setApiAccessToken(data.accessToken);
 
     };
 
@@ -29,6 +34,7 @@ export const AuthProvider = ({ children }) => {
 
             // Remove access token from React memory
             setAccessToken(null);
+            setApiAccessToken(null);
 
             // Remove logged-in user
             setUser(null);

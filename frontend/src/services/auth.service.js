@@ -1,19 +1,17 @@
-import axios from "axios";
-
-const API_URL = import.meta.env.VITE_API_URL;
+import api from "./api";
 
 // ===============================
 // STUDENT
 // ===============================
 
 export const studentRegister = async (data) => {
-  const response = await axios.post(`${API_URL}/student/register`, data);
+  const response = await api.post("/student/register", data);
 
   return response.data;
 };
 
 export const studentLogin = async (data) => {
-  const response = await axios.post(`${API_URL}/student/login`, data);
+  const response = await api.post("/student/login", data);
 
   return response.data;
 };
@@ -23,13 +21,13 @@ export const studentLogin = async (data) => {
 // ===============================
 
 export const teacherRegister = async (data) => {
-  const response = await axios.post(`${API_URL}/teacher/register`, data);
+  const response = await api.post("/teacher/register", data);
 
   return response.data;
 };
 
 export const teacherLogin = async (data) => {
-  const response = await axios.post(`${API_URL}/teacher/login`, data);
+  const response = await api.post("/teacher/login", data);
 
   return response.data;
 };
@@ -39,7 +37,7 @@ export const teacherLogin = async (data) => {
 // ===============================
 
 export const logoutUser = async () => {
-  const response = await axios.post(`${API_URL}/logout`);
+  const response = await api.post("/logout");
 
   return response.data;
 };

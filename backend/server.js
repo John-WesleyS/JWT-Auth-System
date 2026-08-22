@@ -1,6 +1,7 @@
 require("dotenv").config();
 const cors = require("cors");
 const express = require("express");
+const cookieParser = require("cookie-parser");
 
 const connectDB = require("./config/db");
 
@@ -26,6 +27,7 @@ app.use(
   }),
 );
 app.use(express.json());
+app.use(cookieParser()); // lets us read req.cookies.refreshToken
 
 // =====================================================
 // Routes
