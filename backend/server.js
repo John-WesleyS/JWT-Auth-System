@@ -11,15 +11,10 @@ const teacherRoutes = require("./routes/teacher.routes");
 
 const app = express();
 
-// =====================================================
 // Database
-// =====================================================
-
 connectDB();
 
-// =====================================================
 // Middleware
-// =====================================================
 app.use(
   cors({
     origin: "http://localhost:5173",
@@ -27,23 +22,14 @@ app.use(
   }),
 );
 app.use(express.json());
-app.use(cookieParser()); // lets us read req.cookies.refreshToken
+app.use(cookieParser()); 
 
-// =====================================================
 // Routes
-// =====================================================
-
 app.use("/", authRoutes);
-
 app.use("/student", studentRoutes);
 app.use("/teacher", teacherRoutes);
 
-// =====================================================
-// Server
-// =====================================================
-
 const PORT = process.env.PORT || 5000;
-
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });

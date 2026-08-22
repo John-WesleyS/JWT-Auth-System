@@ -5,11 +5,9 @@ const getModelByRole = (role) => {
   if (role === "student") {
     return Student;
   }
-
   if (role === "teacher") {
     return Teacher;
   }
-
   throw new Error("Invalid role");
 };
 

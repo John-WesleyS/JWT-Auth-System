@@ -17,12 +17,7 @@ const verifyAccessToken = (token) => {
   return jwt.verify(token, process.env.JWT_SECRET);
 };
 
-// ---------------------------------------------
-// Refresh token: lives much longer than the access
-// token. Its only job is to get a new access token
-// once the old one expires, without logging in again.
-// ---------------------------------------------
-
+// Refresh token: 
 const generateRefreshToken = (id, role) => {
   return jwt.sign(
     {

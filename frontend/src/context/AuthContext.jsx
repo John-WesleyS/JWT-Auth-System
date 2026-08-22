@@ -5,45 +5,28 @@ import { setAccessToken as setApiAccessToken } from "../services/api";
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-
     const [user, setUser] = useState(null);
     const [accessToken, setAccessToken] = useState(null);
-
     const login = (data) => {
-
         setAccessToken(data.accessToken);
         setUser(data.user);
-
-        // Also give the api instance the token, so it can
-        // attach it to every request automatically.
         setApiAccessToken(data.accessToken);
-
     };
 
     const logout = async () => {
-
         try {
-
             await logoutUser();
-
         } catch (error) {
-
             console.error("Logout error:", error);
-
         } finally {
-
             // Remove access token from React memory
             setAccessToken(null);
             setApiAccessToken(null);
-
             // Remove logged-in user
             setUser(null);
-
         }
     };
-
     const isAuthenticated = !!accessToken;
-
     return (
         <AuthContext.Provider
             value={{

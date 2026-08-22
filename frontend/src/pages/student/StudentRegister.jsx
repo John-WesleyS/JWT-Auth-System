@@ -2,21 +2,20 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { studentRegister } from "../../services/auth.service";
 import { useState } from "react";
+import { useAuth } from "../../context/authContext";
 
 function StudentRegister() {
 
     const {
         register,
         handleSubmit,
-        watch,
+        getValues,
         formState: { errors },
     } = useForm();
 
     const navigate = useNavigate();
 
     const [serverError, setServerError] = useState("");
-
-    const password = watch("password");
 
     const onSubmit = async (data) => {
 
@@ -33,7 +32,7 @@ function StudentRegister() {
                 year: data.year,
             });
 
-            navigate("/");
+            navigate("/student/dashboard");
 
         } catch (error) {
 
@@ -110,6 +109,10 @@ function StudentRegister() {
                             placeholder="student@example.com"
                             {...register("email", {
                                 required: "Email is required",
+                                pattern: {
+                                    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                                    message: "Enter a valid email address",
+                                },
                             })}
                             className="w-full rounded-lg border border-slate-700 bg-slate-800 px-4 py-3 outline-none focus:border-blue-500"
                         />
@@ -139,7 +142,6 @@ function StudentRegister() {
                             })}
                             className="w-full rounded-lg border border-slate-700 bg-slate-800 px-4 py-3 outline-none focus:border-blue-500"
                         />
-
                         {errors.rollNumber && (
                             <p className="mt-1 text-sm text-red-400">
                                 {errors.rollNumber.message}
@@ -183,15 +185,18 @@ function StudentRegister() {
                             Year
                         </label>
 
-                        <input
-                            type="number"
-                            placeholder="2026"
+                        <select
                             {...register("year", {
                                 required: "Year is required",
                                 valueAsNumber: true,
                             })}
                             className="w-full rounded-lg border border-slate-700 bg-slate-800 px-4 py-3 outline-none focus:border-blue-500"
-                        />
+                        >Select Year
+                            <option value="1">1st Year</option>
+                            <option value="2">2nd Year</option>
+                            <option value="3">3rd Year</option>
+                            <option value="4">4th Year</option>
+                        </select>
 
                         {errors.year && (
                             <p className="mt-1 text-sm text-red-400">
@@ -218,6 +223,7 @@ function StudentRegister() {
                                     value: 6,
                                     message: "Minimum 6 characters",
                                 },
+
                             })}
                             className="w-full rounded-lg border border-slate-700 bg-slate-800 px-4 py-3 outline-none focus:border-blue-500"
                         />
@@ -233,31 +239,6 @@ function StudentRegister() {
 
                     {/* Confirm Password */}
 
-                    <div>
-
-                        <label className="mb-2 block text-sm">
-                            Confirm Password
-                        </label>
-
-                        <input
-                            type="password"
-                            {...register("confirmPassword", {
-                                required: "Confirm your password",
-                                validate: value =>
-                                    value === password ||
-                                    "Passwords do not match",
-                            })}
-                            className="w-full rounded-lg border border-slate-700 bg-slate-800 px-4 py-3 outline-none focus:border-blue-500"
-                        />
-
-                        {errors.confirmPassword && (
-                            <p className="mt-1 text-sm text-red-400">
-                                {errors.confirmPassword.message}
-                            </p>
-                        )}
-
-                    </div>
-
 
                     <button
                         type="submit"
@@ -267,20 +248,6 @@ function StudentRegister() {
                     </button>
 
                 </form>
-
-
-                <p className="mt-6 text-center text-sm text-slate-400">
-
-                    Already have an account?
-
-                    <button
-                        onClick={() => navigate("/student/login")}
-                        className="ml-1 text-blue-400"
-                    >
-                        Login
-                    </button>
-
-                </p>
 
             </div>
 

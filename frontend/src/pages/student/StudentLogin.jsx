@@ -78,6 +78,10 @@ function StudentLogin() {
                             placeholder="student@example.com"
                             {...register("email", {
                                 required: "Email is required",
+                                pattern: {
+                                    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                                    message: "Enter a valid email address",
+                                },
                             })}
                             className="w-full rounded-lg border border-slate-700 bg-slate-800 px-4 py-3 outline-none focus:border-blue-500"
                         />
@@ -104,6 +108,7 @@ function StudentLogin() {
                             placeholder="STU-001"
                             {...register("rollNumber", {
                                 required: "Roll number is required",
+                                
                             })}
                             className="w-full rounded-lg border border-slate-700 bg-slate-800 px-4 py-3 outline-none focus:border-blue-500"
                         />
@@ -130,6 +135,10 @@ function StudentLogin() {
                             placeholder="••••••••"
                             {...register("password", {
                                 required: "Password is required",
+                                minLength: {
+                                    value: 6,
+                                    message: "Minimum 6 characters",
+                                },
                             })}
                             className="w-full rounded-lg border border-slate-700 bg-slate-800 px-4 py-3 outline-none focus:border-blue-500"
                         />

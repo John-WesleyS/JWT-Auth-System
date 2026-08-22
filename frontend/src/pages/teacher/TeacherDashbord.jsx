@@ -3,22 +3,17 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 
 function TeacherDashboard() {
-
     const { user, logout } = useAuth();
     const navigate = useNavigate();
-
     const [activeSection, setActiveSection] = useState("overview");
     const [sidebarOpen, setSidebarOpen] = useState(false);
-
     const handleLogout = async () => {
-
         await logout();
 
         navigate("/teacher/login", {
             replace: true,
         });
     };
-
     const menuItems = [
         {
             id: "overview",

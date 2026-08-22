@@ -6,7 +6,6 @@ const authorize = require("../middlewares/role.middleware");
 const { getStudentProfile } = require("../controllers/student.controller");
 
 // Student Profile
-
 router.get("/profile", authMiddleware, authorize("student"), getStudentProfile);
 
 module.exports = router;
