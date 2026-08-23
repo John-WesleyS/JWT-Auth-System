@@ -7,7 +7,6 @@ function TeacherRegister() {
     const {
         register,
         handleSubmit,
-        getValues,
         formState: { errors },
     } = useForm();
     const navigate = useNavigate();
@@ -26,7 +25,7 @@ function TeacherRegister() {
                     .map((subject) => subject.trim())
                     .filter(Boolean),
             });
-            navigate("/teacher/dashboard");
+            navigate("/teacher/login");
         } catch (error) {
             setServerError(
                 error.response?.data?.message ||

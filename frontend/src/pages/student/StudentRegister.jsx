@@ -2,14 +2,12 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { studentRegister } from "../../services/auth.service";
 import { useState } from "react";
-import { useAuth } from "../../context/authContext";
 
 function StudentRegister() {
 
     const {
         register,
         handleSubmit,
-        getValues,
         formState: { errors },
     } = useForm();
 
@@ -32,7 +30,7 @@ function StudentRegister() {
                 year: data.year,
             });
 
-            navigate("/student/dashboard");
+            navigate("/student/login");
 
         } catch (error) {
 
